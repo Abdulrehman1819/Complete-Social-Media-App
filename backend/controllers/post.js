@@ -116,3 +116,46 @@ res.status(500).json({
 })
     }
 }
+exports.addcomments=async(req,res)=>{
+    try{
+
+
+        const post=await Post.findById(req.params.id);
+console.log(post)
+if(!post){
+    return res.status(400).json({
+        success:false,
+        message:"Post Not Found"
+    })
+}
+let commentexists=-1
+post.comments.forEach((item,index)=>{
+    if(item.user.toString()=== req.user._id.toString()){
+        commentexists=index;
+    }
+})
+if(commentexists!== -1)
+{
+post.comments[commentexists].comment=req.body.comment;
+post .save();
+return res.status(200).json({
+    success:true,
+    message:"Comment Updated"
+})
+}
+else{
+    post.comments.push({
+        user:req.user._id,
+        comment:req.body.comment
+    })
+    post.save();
+    return res.status(200).json({
+        success:true,
+        message:"Comment Added"
+    })
+}
+    }
+    catch(e){
+
+    }
+}
