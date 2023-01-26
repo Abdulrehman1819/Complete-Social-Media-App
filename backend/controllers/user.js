@@ -179,9 +179,11 @@ exports.BlockedPosts=async(req,res)=>{
 let postid=req.params.id;
 
 postid=await Post.findById(postid);
-console.log(postid);
+console.log("post id",postid);
 
 const userwanttoblock=req.user._id;
+const user=await User.findById(req.user._id);
+
 console.log(userwanttoblock);
 if(!postid){
   return res.status(404).json({
@@ -205,13 +207,52 @@ else{
   //       res.status(200).json({ message: 'Post blocked successfully by ' });
   //   }
   // });
-
-postid.blocked.push({
-  block:true,
-  userwhoblock:userwanttoblock
+let postalreadyblocked=-1;
+postid.blocked.forEach((item,index)=>{
+  if(item.userwhoblock.toString()==req.user._id.toString()){
+    postalreadyblocked=index;
+  }
 })
-console.log("postid",postid.blocked[1].userwhoblock);
+let useralreadyblocked=-1;
+user.blockedposts.forEach((item,index)=>{
+if(item ===postid){
+ return useralreadyblocked=index;
+}
+})
+
+if(postalreadyblocked===-1){
+ 
+  postid.blocked.push({
+    block:true,
+    userwhoblock:userwanttoblock
+  })
+}
+else if(postalreadyblocked!==-1){
+  if(useralreadyblocked===-1){
+    console.log("User has already blocked tihs post");
+  console.log(useralreadyblocked);
+  }
+  else{
+    console.log("Not Bocked",useralreadyblocked)
+    user.blockedposts.push(postid);
+  }
+  console.log("Post Already Blocked");
+  postid.blocked[postalreadyblocked].remove(postalreadyblocked);
+}
 postid.save();
+user.save();
+if(postalreadyblocked===-1){
+
+  return res.status(500).json({
+    message:"Post Blocked Successfully",
+   userwanttoblock
+  })
+}
+else{
+  return res.status(200).json({
+    message:"Post  UnBlocked"
+  })
+}
 }
 
   }
