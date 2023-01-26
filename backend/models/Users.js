@@ -44,8 +44,21 @@ const UserSchema=new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"Post"
         }
+    ],
+    reportposts:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Post"
+        }
+    ],
+    hiddenposts:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Post"
+        }
     ]
 });
+
 UserSchema.pre("save",async function(next){
     console.log(this.password);
     if(this.password && this.isModified("password")){

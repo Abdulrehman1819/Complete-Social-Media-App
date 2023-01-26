@@ -34,6 +34,42 @@ type:String,
 required:true
         },
     }
-]
+],
+blocked:[
+   {
+   block:{
+    type:Boolean,
+   },
+   
+    userwhoblock:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+    }
+   }
+],
+reported:[
+    {
+     reported:{
+        type:Boolean,
+     },
+      
+     userwhoreported:{
+         type:mongoose.Schema.Types.ObjectId,
+         ref:"User",
+     }
+    }
+ ],
+ hidden:[
+    {
+        hidden:{
+            type:Boolean,
+        },
+     
+     userwhohide:{
+         type:mongoose.Schema.Types.ObjectId,
+         ref:"User",
+     }
+    }
+ ]
 });
 module.exports=mongoose.model("Post",PostSchema);

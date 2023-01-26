@@ -2,6 +2,7 @@ const User=require("../models/Users")
 // var { expressjwt: jwt } = require("express-jwt");
 const jwt  = require('jsonwebtoken');
 const bcrypt=require("bcrypt");
+const Post = require("../models/Post");
 
 exports.register=async(req,res)=>{
     try{
@@ -106,6 +107,7 @@ exports.followUser=async(req,res)=>{
   try{
 const usertofollow=await User.findById(req.params.id);
 const logggedinuser=await User.findById(req.user._id);
+
 if(!usertofollow){
   return res.status(404).json({
     success:false,
@@ -156,4 +158,68 @@ return res.status(500).json({
   message:e.message
 })
 }
+}
+exports.BlockedPosts=async(req,res)=>{
+  try{
+   
+  //   const posttoblock=await Post.findById(req.params.id);
+  //   console.log('post',posttoblock)
+  //   console.log("Trying to block")
+
+  // const user=await User.findById(req.body._id);
+  // user.blockedposts.push(posttoblock._id);
+  // user.save();
+  // res.status(200).json({
+  // success:true,
+  //   message:"Post Successfully Blocked"
+  // })
+//   const posttoblock=await Post.findById(req.params.id);
+//   console.log(posttoblock);
+//  console.log(req.user._id);
+let postid=req.params.id;
+
+postid=await Post.findById(postid);
+console.log(postid);
+
+const userwanttoblock=req.user._id;
+console.log(userwanttoblock);
+if(!postid){
+  return res.status(404).json({
+    success:false,
+    message:"Post Not Found"
+  })
+}
+if(userwanttoblock===postid.owner){
+  console.log("Cannot")
+  return res.status(500).json({
+    message:"You Cannot Block Your Own POst"
+  })
+}
+else{
+  // Post.findByIdAndUpdate(req.params.id, { blocked: true,userwhoblock:userwanttoblock }, { new: true }, (err, post) => {
+
+  //   if (err) {
+  //       res.status(500).json({ error: err });
+  //   } else {
+      
+  //       res.status(200).json({ message: 'Post blocked successfully by ' });
+  //   }
+  // });
+
+postid.blocked.push({
+  block:true,
+  userwhoblock:userwanttoblock
+})
+console.log("postid",postid.blocked[1].userwhoblock);
+postid.save();
+}
+
+  }
+  catch(e){
+    res.status(500).json({
+      success:false,
+      message:e.message
+    })
+  }
+  
 }

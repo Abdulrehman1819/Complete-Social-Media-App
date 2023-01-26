@@ -10,7 +10,7 @@ const newpostData={
     },
     owner:req.user._id
 }   
-
+console.log(newpostData);
 const newPost=await Post.create(newpostData);
 const user=await User.findById(req.user._id);
   
@@ -156,6 +156,9 @@ else{
 }
     }
     catch(e){
-
+res.status(500).json({
+    success:false,
+    message:e.message
+})
     }
 }

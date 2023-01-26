@@ -1,4 +1,5 @@
 const mongoose=require("mongoose");
+const { db } = require("../models/Post");
 exports.connectDatabase=()=>{
     mongoose.connect("mongodb://127.0.0.1:27017/SMapp",{
  
@@ -10,4 +11,5 @@ exports.connectDatabase=()=>{
     console.log(e);
     console.log("Connection is not successful")
 })
+
     }
