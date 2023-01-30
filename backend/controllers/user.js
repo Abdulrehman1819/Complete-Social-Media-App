@@ -220,22 +220,25 @@ if(item ===postid){
 }
 })
 
-if(postalreadyblocked===-1){
- 
+if(postalreadyblocked===-1){ //post phlay say block ni hai
+  user.blockedposts.push(postid);
   postid.blocked.push({
     block:true,
     userwhoblock:userwanttoblock
   })
+  // user.save();
 }
 else if(postalreadyblocked!==-1){
+  user.blockedposts.remove(postid);
+ 
   if(useralreadyblocked===-1){
     console.log("User has already blocked tihs post");
   console.log(useralreadyblocked);
   }
-  else{
-    console.log("Not Bocked",useralreadyblocked)
-    user.blockedposts.push(postid);
-  }
+  // else{
+  //   console.log("Not Bocked",useralreadyblocked)
+  //   user.blockedposts.push(postid);
+  // }
   console.log("Post Already Blocked");
   postid.blocked[postalreadyblocked].remove(postalreadyblocked);
 }
