@@ -231,10 +231,10 @@ if(postalreadyblocked===-1){ //post phlay say block ni hai
 else if(postalreadyblocked!==-1){
   user.blockedposts.remove(postid);
  
-  if(useralreadyblocked===-1){
-    console.log("User has already blocked tihs post");
-  console.log(useralreadyblocked);
-  }
+  // if(useralreadyblocked===-1){
+  //   console.log("User has already blocked tihs post");
+  // console.log(useralreadyblocked);
+  // }
   // else{
   //   console.log("Not Bocked",useralreadyblocked)
   //   user.blockedposts.push(postid);
@@ -248,12 +248,124 @@ if(postalreadyblocked===-1){
 
   return res.status(500).json({
     message:"Post Blocked Successfully",
-   userwanttoblock
+   userwanttoblock,
+   user
   })
 }
 else{
   return res.status(200).json({
-    message:"Post  UnBlocked"
+    message:"Post  UnBlocked",
+user
+  })
+}
+}
+
+  }
+  catch(e){
+    res.status(500).json({
+      success:false,
+      message:e.message
+    })
+  }
+  
+}
+exports.Reportedposts=async(req,res)=>{
+  try{
+   
+  //   const posttoblock=await Post.findById(req.params.id);
+  //   console.log('post',posttoblock)
+  //   console.log("Trying to block")
+
+  // const user=await User.findById(req.body._id);
+  // user.blockedposts.push(posttoblock._id);
+  // user.save();
+  // res.status(200).json({
+  // success:true,
+  //   message:"Post Successfully Blocked"
+  // })
+//   const posttoblock=await Post.findById(req.params.id);
+//   console.log(posttoblock);
+//  console.log(req.user._id);
+let postid=req.params.id;
+
+postid=await Post.findById(postid);
+// console.log("post id",postid);
+
+const userwanttoreport=req.user._id;
+const user=await User.findById(req.user._id);
+
+// console.log(userwanttoblock);
+if(!postid){
+  return res.status(404).json({
+    success:false,
+    message:"Post Not Found"
+  })
+}
+if(userwanttoreport===postid.owner){
+
+  return res.status(500).json({
+    message:"You Cannot Block Your Own POst"
+  })
+}
+else{
+  // Post.findByIdAndUpdate(req.params.id, { blocked: true,userwhoblock:userwanttoblock }, { new: true }, (err, post) => {
+
+  //   if (err) {
+  //       res.status(500).json({ error: err });
+  //   } else {
+      
+  //       res.status(200).json({ message: 'Post blocked successfully by ' });
+  //   }
+  // });
+let postalreadyreported=-1;
+postid.reported.forEach((item,index)=>{
+  if(item.userwhoreported.toString()==req.user._id.toString()){
+    postalreadyreported=index;
+  }
+})
+let useralreadyreported=-1;
+user.reportposts.forEach((item,index)=>{
+if(item ===postid){
+ return useralreadyreported=index;
+}
+})
+
+if(postalreadyreported===-1){ //post phlay say reported ni hai
+  user.reportposts.push(postid);
+  postid.reported.push({
+    reported:true,
+    userwhoreported:userwanttoreport
+  })
+  // user.save();
+}
+else if(postalreadyreported!==-1){
+  user.reportposts.remove(postid);
+ 
+  // if(useralreadyblocked===-1){
+  //   console.log("User has already blocked tihs post");
+  // console.log(useralreadyblocked);
+  // }
+  // else{
+  //   console.log("Not Bocked",useralreadyblocked)
+  //   user.blockedposts.push(postid);
+  // }
+  console.log("Post Already Reprted");
+  postid.reported[postalreadyreported].remove(postalreadyreported);
+}
+postid.save();
+user.save();
+if(postalreadyreported===-1){
+
+  return res.status(500).json({
+    message:"Post Reported Successfully",
+   userwanttoreport,
+   user
+  })
+}
+else{
+  return res.status(200).json({
+    message:"Post  UnBlocked",
+    user
   })
 }
 }

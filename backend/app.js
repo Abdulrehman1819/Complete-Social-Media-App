@@ -10,11 +10,11 @@ app.use(cookieParser());
 //Importing files
 const post=require("./routes/post");
 const user=require("./routes/user");
+const chat=require("./routes/chat");
 const { db } = require('./models/Post');
 //Using Routes
 
 app.use("/api/v1",post);
-
 app.use("/api/v1",user);
-
+app.use("/api/v1",chat);
 module.exports=app;
