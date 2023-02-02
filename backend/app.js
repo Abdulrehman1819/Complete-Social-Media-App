@@ -11,10 +11,12 @@ app.use(cookieParser());
 const post=require("./routes/post");
 const user=require("./routes/user");
 const chat=require("./routes/chat");
+const message=require("./routes/message")
 const { db } = require('./models/Post');
 //Using Routes
 
 app.use("/api/v1",post);
 app.use("/api/v1",user);
 app.use("/api/v1",chat);
+app.use("/api/v1",message);
 module.exports=app;
